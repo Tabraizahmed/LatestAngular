@@ -25,6 +25,7 @@ namespace LatestAngular.Controllers
             _context = context;
         }
 
+
         [HttpPost("api/Vehicle/CreateVehicle")]
         public async Task<IActionResult> CreateVehicle([FromBody] VehicleResource vehicleResource)
         {
