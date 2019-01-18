@@ -29,9 +29,11 @@ namespace LatestAngular.Resources
     {
         
         public string ContactName { get; set; }
-       
+        [Required]
+        [StringLength(255)]
         public string ContactEmail { get; set; }
-       
+        [Required]
+        [StringLength(255)]
         public string ContactPhone { get; set; }
     }
 }

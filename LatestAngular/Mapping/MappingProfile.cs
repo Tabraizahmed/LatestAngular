@@ -25,10 +25,24 @@ namespace LatestAngular.Mapping
 
             //Api resource to domain
             CreateMap<VehicleResource, Vehicle>()
+                .ForMember(v=>v.Id,opt=>opt.Ignore())
                 .ForMember(v => v.ContactName, opt => opt.MapFrom(vr => vr.Contact.ContactName))
                 .ForMember(v => v.ContactEmail, opt => opt.MapFrom(vr => vr.Contact.ContactEmail))
                 .ForMember(v => v.ContactPhone, opt => opt.MapFrom(vr => vr.Contact.ContactPhone))
-                .ForMember(v=>v.Features,opt=>opt.MapFrom(vr=>vr.Features.Select(id=>new VehicleFeature{FeatureId = id}))); 
+                .ForMember(v=>v.Features,opt=>opt.MapFrom(vr=>vr.Features.Select(id=>new VehicleFeature{FeatureId = id})))
+                .AfterMap((vr, v) =>
+                {
+                    //Remove Selected features
+                    var removedSelectedFeatures = v.Features.Where(f => !vr.Features.Contains(f.FeatureId));
+                    foreach (var f in removedSelectedFeatures)
+                            v.Features.Remove(f);
+
+                    //Add new selected features
+                    var addedFeatures = vr.Features.Where(id => v.Features.All(f => f.FeatureId != id))
+                        .Select(id => new VehicleFeature {FeatureId = id});
+                    foreach (var f in addedFeatures)
+                        v.Features.Add(f);
+                }); 
 
          
          
